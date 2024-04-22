@@ -2,6 +2,7 @@ package lib.UI.ios;
 
 import io.appium.java_client.AppiumDriver;
 import lib.UI.ArticlePageObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class iOSArticlePageObject extends ArticlePageObject {
     static {
@@ -14,7 +15,7 @@ public class iOSArticlePageObject extends ArticlePageObject {
 
 
     }
-    public iOSArticlePageObject(AppiumDriver driver)
+    public iOSArticlePageObject(RemoteWebDriver driver)
     {
         super(driver);
     }

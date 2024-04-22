@@ -5,6 +5,7 @@ import lib.Platform;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -22,6 +23,7 @@ abstract public class MyListPageObject extends MainPageObject {
             DESCRIPTION,
             CLOSE_MODAL_WINDOW_BUTTON,
             ARTICLE_CONTAINER,
+            REMOVE_FROM_SAVED_BUTTON,
             DELETE_BUTTON;
 
 
@@ -29,6 +31,9 @@ abstract public class MyListPageObject extends MainPageObject {
         return FOLDER_BY_NAME_TPL.replace("{FOLDER_NAME}", name_of_folder);
     }
 
+    private static String getRemoveButtonByTitle(String article_title) {
+        return REMOVE_FROM_SAVED_BUTTON.replace("{TITLE}", article_title);
+    }
     private static String getSavedArticleXpathByName(String article_title) {
         return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", article_title);
     }
@@ -58,8 +63,8 @@ abstract public class MyListPageObject extends MainPageObject {
 
     }
 
-
-    public MyListPageObject(AppiumDriver driver) {
+    //инициализ драйвер
+    public MyListPageObject(RemoteWebDriver driver) {
         super(driver);
     }
 
@@ -141,6 +146,20 @@ abstract public class MyListPageObject extends MainPageObject {
         System.out.println("Статья удалена...");
 
 
+    }
+    public void deleteArticleFromMWList(String article_title)throws InterruptedException{
+        System.out.println("начинаю удаление статьи.");
+        String remove_locator = getRemoveButtonByTitle(article_title);
+        Thread.sleep(5000);
+        this.waitForElementAndClick(
+                remove_locator,
+                "Cannot click button to remove article from saved",
+                10
+        );
+        Thread.sleep(5000);
+        System.out.println("начинаю обновление страницы.");
+        //обновление страницы, чтобы удаленная статья исчезла
+        driver.navigate().refresh();
     }
 
     public void waitForArticleToDisappearByTitle(String article_title) {

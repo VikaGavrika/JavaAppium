@@ -4,6 +4,7 @@ import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import lib.Platform;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import javax.management.StringValueExp;
 
@@ -21,12 +22,13 @@ abstract public class ArticlePageObject extends MainPageObject{
         MY_LIST_OK_BUTTON,
         CLOSE_ARTICLE_BUTTON,
         OPTIONS_VIEW_LIST_BUTTON,
+        OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
         CANCEL_BUTTON;
 
 
 
     //инициализация драйвера
-    public ArticlePageObject(AppiumDriver driver){
+    public ArticlePageObject(RemoteWebDriver driver){
         super(driver);
     }
 
@@ -63,8 +65,11 @@ abstract public class ArticlePageObject extends MainPageObject{
         //метод будет возвращать название статьи
         if (Platform.getInstance().isAndroid()){
             return title_element.getAttribute("text");
-        }else {
+        }else if (Platform.getInstance().isIOS()){
             return title_element.getAttribute("name");
+        }else {
+            return title_element.getText();
+
         }
     }
 
@@ -75,8 +80,10 @@ abstract public class ArticlePageObject extends MainPageObject{
         //метод будет возвращать название статьи
         if (Platform.getInstance().isAndroid()){
             return title_element.getAttribute("text");
-        }else {
+        }else if (Platform.getInstance().isIOS()){
             return title_element.getAttribute("name");
+        }else {
+            return title_element.getText();
         }
     }
 
@@ -89,16 +96,22 @@ abstract public class ArticlePageObject extends MainPageObject{
                     "Cannot find the end or Article",
                     50
             );
-        } else {
+        } else if (Platform.getInstance().isIOS()){
             this.swipeUPTitleElementAppear(FOOTER_ELEMENT,
             "Cannot find the end or Article",
             50);
+        }else {
+            this.scrollWebPageTitleElementNotVisible(
+                    FOOTER_ELEMENT,
+                    "Cannot find the end or Article",
+                    40
+            );
         }
 
 
     }
     //метод с шагами, которые добавляют статью в список статей
-    public void addArticleToMyList(String name_of_folder){
+    public void addArticleToMyList(String name_of_folder) {
         //делаем переменные для каждого из элемента, так их будет проще менять
 
 
@@ -120,9 +133,8 @@ abstract public class ArticlePageObject extends MainPageObject{
 
         //возврат к статье, нажав Назад
         this.waitForElementAndClick(
-                NAVIGATE_BUTTON,
-                "Cannot find back-button to cancel search",
-                20
+            NAVIGATE_BUTTON,
+            "Cannot find back-button to cancel search",20
         );
         //снова нажать на кнопку с выпадающим списком
         this.waitForElementAndClick(
@@ -234,8 +246,30 @@ abstract public class ArticlePageObject extends MainPageObject{
 
     //метод добавления статьи в список для IOS
     public void addArticlesToMySaved(){
+        //только для вэба сначала удаляем статью из сохраненок,если она там есть.
+        if (Platform.getInstance().isMW()){
+            this.removeArticleFromSavedIfItAdded();
+        }
+        //для Айос просто сохраняем статью
         this.waitForElementAndClick(OPTIONS_ADD_TO_MY_LIST_BUTTON,"Cannot find option to add article to reading list", 15);
 
+    }
+    //метод, который будет удалять статью,если она уже была в избранном
+    //если кнопка удаления статьи из избранного присутствует мы кликаем по кнопке удаления
+    public void removeArticleFromSavedIfItAdded() {
+        if (this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON)) {
+            this.waitForElementAndClick(
+                    OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
+                    "Cannot click button to remove an article from saved",
+                    10
+            );
+            //после того,как удалили статью проверяем,что кнопка добавления статьи появилась.
+            this.waitForElementPresent(
+                    OPTIONS_ADD_TO_MY_LIST_BUTTON,
+                    "Cannot find button to add an article to saved list after removing it from list before",
+                    10
+            );
+        }
     }
 
 

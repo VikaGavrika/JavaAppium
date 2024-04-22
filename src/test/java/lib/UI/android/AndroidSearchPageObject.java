@@ -2,10 +2,12 @@ package lib.UI.android;
 
 import io.appium.java_client.AppiumDriver;
 import lib.UI.SearchPageObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class AndroidSearchPageObject extends SearchPageObject {
     //переносим необходимые константы
     static {
+            SEARCH_INPUT_ELEMENT= "xpath://*[@text='Search Wikipedia']";
             SEARCH_INPUT = "xpath://*[@text='Search Wikipedia']";
             SEARCH_RESULT_BY_SUBSTRING_TPL = "xpath://*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='{SUBSTRING}']";
             SEARCH_RESULTS_TITLE_TPL = "xpath://*[@resource-id=\"org.wikipedia:id/page_list_item_title\" and contains(@text, \"{SUBSTRING_TITLE}\")]";
@@ -22,7 +24,7 @@ public class AndroidSearchPageObject extends SearchPageObject {
 
 
     //конструктор класса
-    public AndroidSearchPageObject(AppiumDriver driver){
+    public AndroidSearchPageObject(RemoteWebDriver driver){
         super(driver);
     }
 

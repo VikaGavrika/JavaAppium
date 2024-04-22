@@ -4,6 +4,7 @@ import io.appium.java_client.AppiumDriver;
 import lib.Platform;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -19,6 +20,7 @@ abstract public class SearchPageObject extends  MainPageObject {
 
 
     protected static String SEARCH_INPUT;
+    protected static String SEARCH_INPUT_ELEMENT;
     protected static String SEARCH_RESULT_BY_SUBSTRING_TPL;
     protected static String SEARCH_RESULTS_TITLE_TPL;
     protected static String SEARCH_RESULTS_DESCRIPTION_TPL;
@@ -29,6 +31,12 @@ abstract public class SearchPageObject extends  MainPageObject {
     protected static String SEARCH_EMPTY_RESULT_ELEMENT;
     protected static String RESULT_LIST;
     protected static String EMPTY_RESULT_LIST;
+
+    //инициализируем драйвер
+    public SearchPageObject(RemoteWebDriver driver){
+        //берем дравер из MainPageObject
+        super(driver);
+    }
 
 
     /*TEMPLATES METHODS */
@@ -98,15 +106,11 @@ abstract public class SearchPageObject extends  MainPageObject {
     }
 
 
-    //инициализируем драйвер
-    public SearchPageObject(AppiumDriver driver){
-        //берем дравер из MainPageObject
-        super(driver);
-    }
+
     public WebElement initSearchInput() {
-        this.waitForElementPresent(SEARCH_INPUT, "Cannot find search input after clicking search init element",15);
+        this.waitForElementPresent(SEARCH_INPUT_ELEMENT, "Cannot find search input after clicking search init element",15);
         // Находим элемент
-        WebElement element = driver.findElement(By.xpath(SEARCH_INPUT));
+        WebElement element = driver.findElement(By.xpath(SEARCH_INPUT_ELEMENT));
         // Возвращаем найденный элемент
         return element;
     }
@@ -115,9 +119,13 @@ abstract public class SearchPageObject extends  MainPageObject {
         this.waitForElementPresent(SEARCH_INPUT, "Cannot find search input after clicking search init element",15);
         this.waitForElementAndClick(SEARCH_INPUT, "Cannot find and click search init element", 15);
     }
+    public void initSearchButtonAndClick(){
+        this.waitForElementPresent(SEARCH_INPUT_ELEMENT, "Cannot find search input after clicking search init element",15);
+        this.waitForElementAndClick(SEARCH_INPUT_ELEMENT, "Cannot find and click search init element", 15);
+    }
 
     public void typeSearchLine(String search_line){
-        this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find and type into search input",15);
+        this.waitForElementAndSendKeys(SEARCH_INPUT_ELEMENT, search_line, "Cannot find and type into search input",15);
     }
 
     public void waitForSearchResult (String substring){

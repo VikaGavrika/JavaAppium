@@ -1,6 +1,7 @@
 package tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
 import lib.UI.factories.ArticlePageObjectFactory;
@@ -19,14 +20,13 @@ public class SearchTests extends CoreTestCase {
     public void testSearch() {
         //пропустить онбординг
         this.skipOnboarding();
-
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
-        //поиска строки элемента и клика
         SearchPageObject.initSearchInputAndClick();
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //метод проверяющий, что поиск по значению "Java" работает корректно и находится нужная статья с нужным заголовком
-        SearchPageObject.waitForSearchResult("Java (programming language)");
+        SearchPageObject.waitForSearchResult("Object-oriented programming language");
+
 
     }
     //Тест2. Отменяет поиск

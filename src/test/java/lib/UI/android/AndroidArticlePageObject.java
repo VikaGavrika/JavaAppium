@@ -2,6 +2,7 @@ package lib.UI.android;
 
 import io.appium.java_client.AppiumDriver;
 import lib.UI.ArticlePageObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class AndroidArticlePageObject extends ArticlePageObject {
     static {
@@ -17,7 +18,7 @@ public class AndroidArticlePageObject extends ArticlePageObject {
         MY_LIST_OK_BUTTON = "xpath://*[@text=\"OK\"]";
         OPTIONS_VIEW_LIST_BUTTON = "xpath://*[@text=\"View list\"]";
     }
-    public AndroidArticlePageObject(AppiumDriver driver)
+    public AndroidArticlePageObject(RemoteWebDriver driver)
     {
         super(driver);
     }

@@ -2,7 +2,7 @@ package lib.UI;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
-
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 
 public class WelcomePageObject extends MainPageObject{
@@ -29,7 +29,7 @@ public class WelcomePageObject extends MainPageObject{
 
 
     //инициализация драйвера
-    public WelcomePageObject(AppiumDriver driver){
+    public WelcomePageObject(RemoteWebDriver driver){
         super(driver);
     }
     //поиск характерного элемента на странице онбординга

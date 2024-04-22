@@ -2,17 +2,25 @@ package lib;
 
 
 
+import com.sun.javafx.collections.MappingChange;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.URL;
+import java.util.Map;
+import java.util.HashMap;
+
 
 public class Platform {
     //значения, с которыми будем сравнивать переменные среды
     private static final String PLATFORM_IOS = "ios";
     private static final String PLATFORM_ANDROID = "android";
+    private static final String PLATFORM_MOBILE_WEB = "mobile_web";
 
     private static final String APPIUM_URL = "http://127.0.0.1:4723";
 
@@ -30,26 +38,33 @@ public class Platform {
     }
 
     //метод отвечающий за выбор драйвера
-    public AppiumDriver getDriver() throws Exception{
+    public RemoteWebDriver getDriver() throws Exception{
         URL URL = new URL(APPIUM_URL);
         if (this.isAndroid()){
             return new AndroidDriver(URL, this.getAndroidCapabilities());
         } else if (this.isIOS()){
             return new IOSDriver(URL, this.getIOSCapabilities());
+        } else if (this.isMW()){
+            return new ChromeDriver(this.getMWChromeOptions());
+
         } else {
-            throw new Exception ("Cannot detected type of the Driver. Platform value: "+this.getPlatformVar());
+            throw new Exception ("Cannot detected type of the Driver. Platform value: " +this.getPlatformVar());
         }
     }
 
 
 
-    //методы,которые определяют явл-ся ли платформа андройд или айос
+    //методы,которые определяют явл-ся ли платформа андройд или айос или браузер
     public boolean isAndroid(){
         return isPlatform(PLATFORM_ANDROID);
     }
     public boolean isIOS(){
         return isPlatform(PLATFORM_IOS);
     }
+    public boolean isMW(){
+        return isPlatform(PLATFORM_MOBILE_WEB);
+    }
+
 
     //метод, который запускает нужную платформу
     private DesiredCapabilities getAndroidCapabilities() {
@@ -80,6 +95,31 @@ public class Platform {
         return capabilities;
     }
 
+    //метод, который запускает браузер Хром
+    private ChromeOptions getMWChromeOptions(){
+        //записываем опции браузера, которые будем использовать
+        Map<String, Integer> deviceMetrics = new HashMap<>();
+        //задаем параметры девайса Pixel7
+        deviceMetrics.put("width", 412);
+        deviceMetrics.put("height", 915);
+        deviceMetrics.put("pixelRatio", 260);
+        //параметр юзерагента
+        Map<String, Object> mobileEmulation = new HashMap<>();
+        //передаем существующие метрики девайса
+        mobileEmulation.put("deviceMetrics", deviceMetrics);
+        //передаем метрики по юзерагенту. юзерагент представляет собой девайс для браузера, как моб устройство на Андройд
+        mobileEmulation.put("userAgent", "Mozilla/5.0 (Linux; Android 13; en-us; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.6312.122 Safari/537.36 ");
+
+        //задаем параметры окна хром
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("window-size=530,1015");
+
+        //возвращаем
+        return chromeOptions;
+
+    }
+
+
     //метод, который будет сравнивать нашу платформу с той переменной, которая приходит к нему на вход
     private boolean isPlatform(String my_platform){
         //сравниваем 2 платформы
@@ -91,7 +131,8 @@ public class Platform {
     }
 
     //метод, который отвечает за получение переменной окружения
-    private String getPlatformVar(){
+    public String getPlatformVar()
+    {
         return System.getenv("PLATFORM");
     }
 

@@ -2,11 +2,13 @@ package lib.UI.ios;
 
 import io.appium.java_client.AppiumDriver;
 import lib.UI.SearchPageObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class iOSSearchPageObject extends SearchPageObject {
 
     //переносим необходимые константы
     static {
+        SEARCH_INPUT_ELEMENT = "xpath://XCUIElementTypeSearchField[@name='Search Wikipedia']";
         SEARCH_INPUT = "xpath://XCUIElementTypeSearchField[@name='Search Wikipedia']";
         SEARCH_RESULT_BY_SUBSTRING_TPL = "xpath://XCUIElementTypeStaticText[contains(@name,'{SUBSTRING}')]";
         SEARCH_RESULTS_TITLE_TPL = "//XCUIElementTypeStaticText[contains(@name,'{SUBSTRING_TITLE}')]";
@@ -20,7 +22,7 @@ public class iOSSearchPageObject extends SearchPageObject {
         RESULT_LIST = "xpath:(//XCUIElementTypeCollectionView)[1]";
         EMPTY_RESULT_LIST = "id:No recent searches yet";
     }
-    public iOSSearchPageObject(AppiumDriver driver){
+    public iOSSearchPageObject(RemoteWebDriver driver){
         super(driver);
     }
 }

@@ -2,13 +2,11 @@ package tests;
 
 import lib.CoreTestCase;
 import lib.Platform;
-import lib.UI.ArticlePageObject;
-import lib.UI.MyListPageObject;
-import lib.UI.NavigationUI;
-import lib.UI.SearchPageObject;
+import lib.UI.*;
 import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.MyListPageObjectFactory;
-import lib.UI.factories.NavigationUiFactory;
+import lib.UI.factories.NavigationUIFactory;
+import lib.UI.factories.NavigationUIFactory;
 import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,10 +24,12 @@ public class MyListTests extends CoreTestCase {
 
     //задаем переменную с названием списка, тк будем исп-ть ее в нескольких местах
     private static final String name_of_folder = "articles";
+    private static final String login = "VikaGavrika";
+    private static final String password = "GavrikaVika";
 
 
     @Test
-    public void testSavedFirstArticleToMyList(){
+    public void testSavedFirstArticleToMyList() throws InterruptedException {
         //пропустить онбординг
         this.skipOnboarding();
 
@@ -40,7 +40,7 @@ public class MyListTests extends CoreTestCase {
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
-        SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
+        SearchPageObject.clickByArticleWithSubstring("programming language");
 
         //Работа с заголовком статьи. Инициализация
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
@@ -60,55 +60,83 @@ public class MyListTests extends CoreTestCase {
                 i++;
             }
 
-        } else {
-            //для iOS
+        } else if (Platform.getInstance().isIOS()) {
             ArticlePageObject.addArticlesToMySaved();
             //закрыть статью
             ArticlePageObject.closeArticle();
             //вернуться на главную
             ArticlePageObject.comeBackToMain();
 
+
+        } else {
+            ArticlePageObject.addArticlesToMySaved();
+            //инициализ драйвера авторизации
+            AuthorizationPageObject Auth = new AuthorizationPageObject(driver);
+            //авторизация
+            //дожидаемся кнопки логин (после подписки на действие клика в избранное) и нажимаем на нее
+            Auth.clickAuthButton();
+            Auth.enterLoginData(login, password);
+            Auth.submitForm();
+            //ждем пока средиректит обратно на страницу статьи
+            ArticlePageObject.waitForTitleElement("programming language");
+            //проверяем, что мы все еще на той же странице
+            assertEquals("we are not  on the same page after login",
+                    article_title,
+                    ArticlePageObject.getArticleTitle("programming language")
+            );
+
+            //нажать на кнопку избранное в статье
+            ArticlePageObject.addArticlesToMySaved();
+
         }
 
         //инициализация навигация по приложению
-        NavigationUI NavigationUI = NavigationUiFactory.get(driver);
-        //нажать кнопку Save в меню
+        NavigationUI NavigationUI = NavigationUIFactory.get(driver);
+        //раскрываем меню навигации только для мобайл веба
+        NavigationUI.openNavigation();
+        //нажать кнопку Избранное (сохраненные) в меню
         NavigationUI.clickMyLists();
 
         //инициализация объектов в списке My list
         MyListPageObject MyListPageObject = MyListPageObjectFactory.get(driver);
-        //если это андройд, то просто возвращаемся к след действиям
+        //если это андройд или веб версия в браузере, то просто возвращаемся к след действиям
         if (Platform.getInstance().isAndroid()){
             return;
-        }else {
+        }else if (Platform.getInstance().isIOS()){
             //для Айос. закрываем возникшее мод окно
             MyListPageObject.close_modal_window();
-
+        } else {
+            System.out.println("Method close_modal_window() does nothing for platform " + Platform.getInstance().getPlatformVar());
         }
+
         //Для Андройд. поиск списка статей по названию, название задано в переменную выше. клик на список статей
         if (Platform.getInstance().isAndroid()){
             MyListPageObject.openFolderByName(name_of_folder);
+        } else{
+        System.out.println("Method openFolderByName() does nothing for platform " + Platform.getInstance().getPlatformVar());
         }
 
         //удаление статьи свайпом влево для разных платформ
+        //для андройд
         if (Platform.getInstance().isAndroid()){
             MyListPageObject.swipeByArticleToDelete(article_title);
-        } else {
+        } else if (Platform.getInstance().isIOS()){
             //для Айос
             MyListPageObject.swipeByArticleToDeleteFromIOSList(article_title);
+        } else {
+            //для мобайл веб
+            MyListPageObject.deleteArticleFromMWList(article_title);
         }
-
 
         //убеждаемся, что нужной статьи нет в списке
         MyListPageObject.waitForArticleToDisappearByTitle(article_title);
-
 
     }
 
     //Ex5. Tecт13, сохранить две статьи в список, одну статью удалить, убелиться, что вторая статья осталась,
     // зайти в нее и сравнить заголовки
     @Test
-    public void testSavedTwoArticleToMyList() {
+    public void testSavedTwoArticleToMyList() throws InterruptedException {
         //пропустить онбординг
         this.skipOnboarding();
 
@@ -175,7 +203,7 @@ public class MyListTests extends CoreTestCase {
         }
 
         //инициализация навигация по приложению
-        NavigationUI NavigationUI = NavigationUiFactory.get(driver);
+        NavigationUI NavigationUI = NavigationUIFactory.get(driver);
         //нажать кнопку Save в меню
         NavigationUI.clickMyLists();
 

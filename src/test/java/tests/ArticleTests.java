@@ -22,7 +22,7 @@ public class ArticleTests extends CoreTestCase {
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
-        SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
+        SearchPageObject.clickByArticleWithSubstring("programming language");
 
         //используем новый метод. инициализация
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);

@@ -1,6 +1,7 @@
 package tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
 import lib.UI.factories.ArticlePageObjectFactory;
@@ -11,9 +12,14 @@ public class ChangeAppConditionTests extends CoreTestCase {
     //Тесты на ориентации и бэкграунт
 
     //Тест11, который вводит значение в поиск, выбирает статью, после поворачивать экран телефона,
-    // проверять, что название статьи не изменилось
+    // проверять, что название статьи не изменилось. Только айос и Андройд
     @Test
-    public void testChangeScreenOrientationOnSearchResults(){
+    public void testChangeScreenOrientationOnSearchResults()
+    {
+        //Если запуск в браузере, то просто возвращаем, этот тест будет пропускаться.
+        if (Platform.getInstance().isMW()){
+            return;
+        }
         //пропустить онбординг
         this.skipOnboarding();
 
@@ -68,7 +74,13 @@ public class ChangeAppConditionTests extends CoreTestCase {
     // потом приложение сворачиваем, через некоторое время разворачиваем, после открытия приложения проверяем,
     // что элемент, остался на месте.
     @Test
-    public void testCheckSearchArticleInBackground(){
+    public void testCheckSearchArticleInBackground()
+    {
+        //Если запуск в браузере, то просто возвращаем, этот тест будет пропускаться.
+        if (Platform.getInstance().isMW()){
+            return;
+        }
+
         //пропустить онбординг
         this.skipOnboarding();
 
