@@ -110,7 +110,7 @@ public class CoreTestCase extends TestCase {
         }else {
             //если это не так, то есть запустили тест в браузере,то ничего не делаем,
             // кроме напоминания, что данный метод для браузера не работает
-            System.out.println("Method rotateScreenPortrait() does nothing for platform " + Platform.getInstance().getPlatformVar());
+            System.out.println("Method skipOnboarding() does nothing for platform " + Platform.getInstance().getPlatformVar());
         }
 
     }

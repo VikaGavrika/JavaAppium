@@ -18,7 +18,7 @@ abstract public class NavigationUI extends MainPageObject{
     public void openNavigation()
     {
         if(Platform.getInstance().isMW()){
-            this.waitForElementAndClick(OPEN_NAVIGATION,"Cannot find and click open navigation button",10);
+            this.waitForElementAndClick(OPEN_NAVIGATION,"Cannot find and click open navigation button",15);
 
         }else {
             System.out.println("Method openNavigation() does nothing for platform " + Platform.getInstance().getPlatformVar());

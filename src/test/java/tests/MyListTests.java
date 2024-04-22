@@ -148,7 +148,7 @@ public class MyListTests extends CoreTestCase {
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Клик по статье
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        SearchPageObject.clickByArticleWithSubstring("programming language");
 
         //Работа с заголовком статьи. Инициализация
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
@@ -168,13 +168,33 @@ public class MyListTests extends CoreTestCase {
                 i++;
             }
 
-        } else {
-            //для iOS
+        } else if (Platform.getInstance().isIOS()) {
             ArticlePageObject.addArticlesToMySaved();
             //закрыть статью
             ArticlePageObject.closeArticle();
             //вернуться на главную
             ArticlePageObject.comeBackToMain();
+
+
+        } else {
+            ArticlePageObject.addArticlesToMySaved();
+            //инициализ драйвера авторизации
+            AuthorizationPageObject Auth = new AuthorizationPageObject(driver);
+            //авторизация
+            //дожидаемся кнопки логин (после подписки на действие клика в избранное) и нажимаем на нее
+            Auth.clickAuthButton();
+            Auth.enterLoginData(login, password);
+            Auth.submitForm();
+            //ждем пока средиректит обратно на страницу статьи
+            ArticlePageObject.waitForTitleElement("programming language");
+            //проверяем, что мы все еще на той же странице
+            assertEquals("we are not  on the same page after login",
+                    title_first_article,
+                    ArticlePageObject.getArticleTitle("programming language")
+            );
+
+            //нажать на кнопку избранное в статье
+            ArticlePageObject.addArticlesToMySaved();
 
         }
         //2 статья
@@ -192,31 +212,35 @@ public class MyListTests extends CoreTestCase {
         // добавляем статью в список статей
         if(Platform.getInstance().isAndroid()){
             ArticlePageObject.addSecondArticleToMyList(name_of_folder);
-        }else {
-            //для iOS
+        } else if (Platform.getInstance().isIOS()) {
             ArticlePageObject.addArticlesToMySaved();
             //закрыть статью
             ArticlePageObject.closeArticle();
             //вернуться на главную
             ArticlePageObject.comeBackToMain();
 
+
+        } else {
+            ArticlePageObject.addArticlesToMySaved();
+
         }
 
         //инициализация навигация по приложению
         NavigationUI NavigationUI = NavigationUIFactory.get(driver);
+        //раскрываем меню навигации только для мобайл веба
+        NavigationUI.openNavigation();
         //нажать кнопку Save в меню
         NavigationUI.clickMyLists();
 
         //инициализация объектов в списке My list
         MyListPageObject MyListPageObject = MyListPageObjectFactory.get(driver);
-        //если это андройд, то просто возвращаемся к след действиям
-        if (Platform.getInstance().isAndroid()){
-            return;
-        }else {
-            //для Айос. закрываем возникшее мод окно
+        //Только для Айос. закрываем мод окно. для остальных платформ метод не работает
+        if (Platform.getInstance().isIOS()){
             MyListPageObject.close_modal_window();
-
+        }else {
+            System.out.println("Method close_modal_window() does nothing for platform " + Platform.getInstance().getPlatformVar());
         }
+
 
         //кол-во сохраненных статей до удаления
         int actualSavedArticlesCountBeforeDelete= MyListPageObject.getSavedArticleCount(20);
@@ -234,10 +258,16 @@ public class MyListTests extends CoreTestCase {
         //удаление статьи свайпом влево для разных платформ
         if (Platform.getInstance().isAndroid()){
             MyListPageObject.swipeByArticleToDeleteFromList(title_second_article);
-        } else {
+        } else if (Platform.getInstance().isIOS()){
             //для Айос
             MyListPageObject.swipeByArticleToDeleteFromIOSList(title_second_article);
+        } else {
+            //для мобайл веб
+            MyListPageObject.deleteArticleFromMWList(title_second_article);
         }
+
+        //убеждаемся, что нужной статьи нет в списке
+        MyListPageObject.waitForArticleToDisappearByTitle(title_second_article);
 
         //кол-во сохраненных статей после удаления
         int actualSavedArticlesCountAfterDelete= MyListPageObject.getSavedArticleCount(20);

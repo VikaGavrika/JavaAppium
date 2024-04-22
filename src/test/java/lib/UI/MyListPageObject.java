@@ -41,7 +41,9 @@ abstract public class MyListPageObject extends MainPageObject {
     private static String getResultDescriptionElement(String article_description) {
         //меняем значение переменной SUBSTRING на строчку substring
         return ARTICLE_BY_DESCRIPTION_TPL.replace("{DESCRIPTION}", article_description);
+
     }
+
 
 
     //метод ожидания описания
@@ -175,11 +177,12 @@ abstract public class MyListPageObject extends MainPageObject {
     //счетчик результатов поиска
     public int getSavedArticleCount(int timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
-        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//XCUIElementTypeCollectionView/XCUIElementTypeCell")));
+        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(ARTICLE_CONTAINER)));
         System.out.println("Найдено " + elements.size() + " сохраненных статей.");
         return elements.size();
 
     }
+
 
 
     //метод для вывода списка description найденных статей

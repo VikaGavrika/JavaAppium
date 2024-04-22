@@ -129,7 +129,7 @@ public class MainPageObject {
             }catch (Exception e) {
                 //если кликов станет больше макс значения, то делаем еще раз клик и потом ошибка
                 if (current_attempts > amount_of_attempts) {
-                    this.waitForElementAndClick(locator,error_message,3);
+                    this.waitForElementAndClick(locator,error_message,5);
                 }
             }
             //счетчик увелич на 1 после каждого цикла
