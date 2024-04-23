@@ -1,22 +1,29 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
-import lib.Platform;
-import lib.UI.ArticlePageObject;
+
 import lib.UI.SearchPageObject;
-import lib.UI.factories.ArticlePageObjectFactory;
+
 import lib.UI.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.By;
+
 import org.openqa.selenium.WebElement;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 
+@Epic("Search articles")
 public class SearchTests extends CoreTestCase {
     //тесты, связанные с поиском
     //Тест1. Поиск
     @Test
+    @Features(value = {@Feature(value="Search")})
+    @DisplayName("Поиск статьи")
+    @Description("Найти поле поиска, ввести в него значения для поиска. Убедиться,что в результатах поиска есть ожидаемая статья")
+    @Step("Старт поиска статьи")
+    //критичность теста
+    @Severity(value = SeverityLevel.CRITICAL)
     public void testSearch() {
         //пропустить онбординг
         this.skipOnboarding();
@@ -31,6 +38,12 @@ public class SearchTests extends CoreTestCase {
     }
     //Тест2. Отменяет поиск
     @Test
+    @Features(value = {@Feature(value="Search")})
+    @DisplayName("Отмена поиска")
+    @Description("Найти поле поиска, ввести в него значения для поиска. Убедиться,что в результатах поиска есть ожидаемая статья. Отменить поиск")
+    @Step("Старт теста по отмене поиска")
+    //критичность теста
+    @Severity(value = SeverityLevel.CRITICAL)
     public void testCanselSearch() {
         //пропустить онбординг
         this.skipOnboarding();
@@ -52,6 +65,12 @@ public class SearchTests extends CoreTestCase {
 
     //тест5, который проверяет, что поле ввода для поиска статьи содержит текст Search Wikipedia
     @Test
+    @Features(value = {@Feature(value="Search")})
+    @DisplayName("Поиск статьи")
+    @Description("Найти поле поиска. Убедиться,что поле ввода для поиска статьи содержит текст Search Wikipedia")
+    @Step("Старт поиска элемента - инпут")
+    //критичность теста
+    @Severity(value = SeverityLevel.TRIVIAL)
     public void testSearchInputHasText() {
         //пропустить онбординг
         this.skipOnboarding();
@@ -70,6 +89,12 @@ public class SearchTests extends CoreTestCase {
     //EX3. Тест6, который делает поиск по какому-то слову. Затем убеждается, найдены несколько статей со словом в листе результатов,
     // затем удаляет результаты поиска и убеждается что лист с результатами пуст
     @Test
+    @Features(value = {@Feature(value="Search")})
+    @DisplayName("Поиск по определенному слову. Затем удалить поиск")
+    @Description("Поиск по слову и проверка, что в результатах поиска есть статьи с ожидаемым словом. Заем удалить поиск и убедиться, что результат поиска пустой")
+    @Step("Старт теста по поиску и отмене поиска")
+    //критичность теста
+    @Severity(value = SeverityLevel.CRITICAL)
     public void testSearchAndCanselSearch() {
         //пропустить онбординг
         this.skipOnboarding();
@@ -83,7 +108,7 @@ public class SearchTests extends CoreTestCase {
         //выдает кол-во статей
         int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
         //убеждаемся, что кол-во полученных элементов больше нуля
-        assertTrue(
+        Assert.assertTrue(
                 "We found too few results",
                 amount_of_search_results > 0
         );
@@ -105,6 +130,12 @@ public class SearchTests extends CoreTestCase {
 
     //Ex4. Тест7, который делает поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово.
     @Test
+    @Features(value = {@Feature(value="Search")})
+    @DisplayName("Поиск по определенному слову и проверка заголовку статей в результатах поиска")
+    @Description("Поиск по какому-то слову. Затем убеждается, что в каждом результате поиска есть это слово")
+    @Step("Старт теста поиску по слову и проверки результатов поиска с этим словом")
+    //критичность теста
+    @Severity(value = SeverityLevel.CRITICAL)
     public void testSearchTextAndCheckTextInTitles() {
         //пропустить онбординг
         this.skipOnboarding();
@@ -129,8 +160,14 @@ public class SearchTests extends CoreTestCase {
 
 
 
-    //Тест9, которой ищет какую-то конкретную статью, а затем проверяет, что вышел 1 результат с этой статьей
+    //Тест9, которой ищет какую-то конкретную статью, а затем проверяет, что вышел минимум 1 результат с этой статьей
     @Test
+    @Features(value = {@Feature(value="Search")})
+    @DisplayName("Поиск статьи и проверка результата,что статей больше 1")
+    @Description("Поиск статьи. Затем проверяет, что вышел минимум 1 результат с этой статьей")
+    @Step("Старт теста поиску статьи  и проверки результатов поиска больше 1")
+    //критичность теста
+    @Severity(value = SeverityLevel.MINOR)
     public void testAmountOfNotEmptySearch(){
         //пропустить онбординг
         this.skipOnboarding();
@@ -147,7 +184,7 @@ public class SearchTests extends CoreTestCase {
         int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
 
         //убеждаемся, что кол-во полученных элементов больше нуля
-        assertTrue(
+        Assert.assertTrue(
                 "We found too few results",
                 amount_of_search_results > 0
         );
@@ -157,6 +194,12 @@ public class SearchTests extends CoreTestCase {
     //Тест10, который будет проверять, что результаты поиска не содержат элементы с определенным текстом.
     // И есть элемент "нет результатов"
     @Test
+    @Features(value = {@Feature(value="Search")})
+    @DisplayName("Пустой результат поиска")
+    @Description("Поиск статьи.Затем проверяет, что результаты поиска не содержат элементы с определенным текстом.И есть элемент \"нет результатов\"")
+    @Step("Старт теста пустого результата поиска")
+    //критичность теста
+    @Severity(value = SeverityLevel.MINOR)
     public void testAmountOfEmptySearch(){
         //пропустить онбординг
         this.skipOnboarding();
@@ -178,6 +221,12 @@ public class SearchTests extends CoreTestCase {
     // Далее тест должен убеждаться, что в результате поиска присутствуют три элемента,
     // содержащие ожидаемые вами article_title и article_description.
     @Test
+    @Features(value = {@Feature(value="Search")})
+    @DisplayName("Поиск по определенному слову и выдача минимум три результата с ожидаемыми заголовками и описаниями в статьях")
+    @Description("Поиск статьи.Затем проверяет, что результатов поиска больше трех и  содержат ожидаемые заголовки и описания статей.")
+    @Step("Старт теста поиска статей с ожидаемыми названиями и описаниями")
+    //критичность теста
+    @Severity(value = SeverityLevel.MINOR)
     public void testSearchArticleAndCheckTitleAndDiscription() {
         //пропустить онбординг
         this.skipOnboarding();

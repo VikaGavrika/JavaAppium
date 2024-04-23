@@ -1,6 +1,7 @@
 package lib.UI;
 
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 import lib.Platform;
 import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -15,6 +16,7 @@ abstract public class NavigationUI extends MainPageObject{
         super(driver);
     }
 
+    @Step("Клик по кнопке открытия меню навигации")
     public void openNavigation()
     {
         if(Platform.getInstance().isMW()){
@@ -27,6 +29,7 @@ abstract public class NavigationUI extends MainPageObject{
 
 
     //навигация по приложению
+    @Step("Клик по кнопке сохраненных статей")
     public void clickMyLists()throws InterruptedException {
         Thread.sleep(10000);
 

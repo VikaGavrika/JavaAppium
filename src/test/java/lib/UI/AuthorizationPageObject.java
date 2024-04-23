@@ -1,6 +1,7 @@
 package lib.UI;
 
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -23,6 +24,7 @@ public class AuthorizationPageObject extends MainPageObject
 
     //методы авторизации
     //метод, который кликает по кнопке логин. Но при эом с временем ожидания пока произойдет подписание на предыдущее действие,то есть нажатие звездочки избранное
+    @Step("Клик по кнопке Логин")
     public void clickAuthButton() throws InterruptedException {
         //ждем пока исчезнет оверлэй
         Thread.sleep(5000);
@@ -34,6 +36,7 @@ public class AuthorizationPageObject extends MainPageObject
 
     }
     //находим элемент оверлэй
+    @Step("Поиск оверлэй")
     public WebElement overlay() {
         this.waitForElementPresent(OVERLAY, "Cannot find overlay Auth",15);
         // Находим элемент
@@ -44,12 +47,14 @@ public class AuthorizationPageObject extends MainPageObject
 
 
     //метод ввода данных для авторизации
+    @Step("Ввод логина и пароля")
     public void enterLoginData(String login, String password){
         this.waitForElementAndSendKeys(LOGIN_INPUT, login, "Cannot find and put a login to the login input",15);
         this.waitForElementAndSendKeys(PASSWORD_INPUT, password,"Cannot find and put a password to the login input",15);
     }
 
     //метод, который кликает по кнопке сабмит
+    @Step("Подтвердить форму ЛогИн")
     public void submitForm() {
         this.waitForElementAndClick(SUBMIT_BUTTON, "Cannot find and click submit button",15);
     }

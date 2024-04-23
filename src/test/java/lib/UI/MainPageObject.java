@@ -4,22 +4,28 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
+import io.qameta.allure.Attachment;
+import io.qameta.allure.Description;
+import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import lib.Platform;
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
+
 
 import static org.junit.Assert.assertEquals;
 
@@ -72,7 +78,7 @@ public class MainPageObject {
 
 
     //переносим все методы, которыми пользуются тесты
-
+    @Step("Проверка, что элемент присутствует")
     public void assertElementPresent(String locator){
         By by = this.getLocatorByString(locator);
         WebDriverWait wait = new WebDriverWait(driver, 15);
@@ -87,9 +93,8 @@ public class MainPageObject {
     }
 
 
-
-
     //метод получения заголовка статьи
+    @Step("Получение заголовка статьи")
     public String waitForElementAndGetAttribute(String locator, String attribute, String error_message, long timeoutInSeconds ){
         WebElement element = waitForElementPresent(locator, error_message,timeoutInSeconds);
         return element.getAttribute(attribute);
@@ -97,6 +102,7 @@ public class MainPageObject {
     }
 
     //метод считает количество элементов, которые нашли
+    @Step("Считаем количество элементов, которые нашли")
     public int getAmountOfElements(String locator)
     {
         By by = this.getLocatorByString(locator);
@@ -112,6 +118,7 @@ public class MainPageObject {
 
     //клик по элементу, когда есть анимация
     //метод,который будет пытаться кликать снова и снова, пока не пропадет сообщение об ошибке
+    @Step("Клик по элементу, когда есть анимация")
     public void tryClickElementWithFewAttempts(String locator, String error_message,int amount_of_attempts){
         //сколько раз кликнули на момент запуска.счетчик кликов
         int current_attempts = 0;
@@ -140,6 +147,7 @@ public class MainPageObject {
 
 
     //метод, который находит элемент
+    @Step("Находим элемент")
     public WebElement findElement(String locator) {
         By by = this.getLocatorByString(locator);
         // Находим элемент
@@ -149,6 +157,7 @@ public class MainPageObject {
     }
 
     //метод, проверяющий, что не нашлось ни одного элемента с текстом из поиска
+    @Step("Проверяем, что не нашлось ни одного элемента с текстом из поиска")
     public void assertNoElementsPresentWithText(String locator, String search_line, String error_message){
         //получаем кол-во элементов
         int amount_of_elements = getAmountOfElements(locator);
@@ -181,6 +190,7 @@ public class MainPageObject {
 
 
     //метод, который проверяет наличие нескольких результатов поиска на странице с ожидаемым текстом
+    @Step("Проверяем наличие нескольких результатов поиска на странице с ожидаемым текстом")
     public void assertMultipleSearchResultsWithText(String locator, WebElement resultsList, String expectedText) {
         // Получаем кол-во статей с ожидаемым словом
         By by = this.getLocatorByString(locator);
@@ -218,6 +228,7 @@ public class MainPageObject {
 
 
     //метод, который проверяет наличие ожидаемого текста у элемента.
+    @Step("Проверяем наличие ожидаемого текста у элемента")
     public void assertElementHasText(WebElement element, String expectedText) {
         String actualText = element.getText();
         assertEquals(
@@ -229,6 +240,7 @@ public class MainPageObject {
 
 
     //метод, котрый будет искать элемент по любому атрибуту
+    @Step("Поиск элемента на странице по любому атрибуту")
     public WebElement waitForElementPresent(String locator, String error_message, long timeoutInSecond) {
         By by = this.getLocatorByString(locator);
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
@@ -243,11 +255,13 @@ public class MainPageObject {
 
 
     //метод адаптированный, который ищет элемент с дефолтной задержкой в 15 сек
+    @Step("Дожидаемся элемента на странице с задержкой в 15 сек")
     public WebElement waitForElementPresent(String locator, String error_message) {
         return waitForElementPresent(locator, error_message, 15);
     }
 
     //метод, испол-я который тесты сначала будут дожидаться элемента, а после этого происзойдет клик
+    @Step("Дожидаемся элемента на странице и кликаем по нему")
     public WebElement waitForElementAndClick(String locator, String error_message, long timeoutInSecond) {
         WebElement element = waitForElementPresent(locator, error_message, timeoutInSecond);
         element.click();
@@ -255,6 +269,7 @@ public class MainPageObject {
     }
 
     //метод, испол-я который тесты сначала будут дожидаться элемента, а после этого происзойдет отправка текста
+    @Step("Дожидаемся элемента на странице")
     public WebElement waitForElementAndSendKeys(String locator, String value, String error_message, long timeoutInSecond) {
         WebElement element = waitForElementPresent(locator, error_message, timeoutInSecond);
         element.sendKeys(value);
@@ -262,6 +277,7 @@ public class MainPageObject {
     }
 
     //Метод отсутствия элемента на странице
+    @Step("Не дожидаемся элемента на странице, элемента на странице нет")
     public boolean waitForElementNotPresent(String locator, String error_message, long timeoutInSecond) {
         By by = this.getLocatorByString(locator);
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSecond);
@@ -274,6 +290,7 @@ public class MainPageObject {
     }
 
     //метод очистки поля ввода
+    @Step("Очищаем поле ввода")
     public WebElement waitForElementAndClear(String locator, String error_message, long timeoutInSecond) {
         WebElement element = waitForElementPresent(locator, error_message, timeoutInSecond);
         element.clear();
@@ -313,6 +330,7 @@ public class MainPageObject {
 
 
     //РАБОТАЕТ метод свайпа снизу-вверх. Только для андройд и айос. Для браузера не подходит
+    @Step("Делаем свайп снизу вверх. Только для айос и андройд")
     public void verticalSwipe(int timeOfSwipe)
     { //проверяем, что драйвер является случаем Аппиум драйвера (то есть тест работает на Андройд или айос),
         //то выполняем драйвер perform
@@ -352,6 +370,7 @@ public class MainPageObject {
 
     }
     //Быстрый свайп Только для андройд и айос. Для браузера не подходит
+    @Step("Делаем быстрый свайп")
     public void swipeQuick()
     {
         if (driver instanceof AppiumDriver){
@@ -365,6 +384,7 @@ public class MainPageObject {
     }
 
     //метод, в котором будем свайпить до определенного элемента Только для андройд и айос. Для браузера не подходит
+    @Step("Делаем свайп до определенного элемента (только для айос и андройд)")
     public void verticalSwipeToFindElement(String locator, String error_message, int max_swipes)
     {
         if (driver instanceof AppiumDriver){
@@ -402,6 +422,7 @@ public class MainPageObject {
     }
 
     //Только для андройд и айос. Для браузера не подходит
+    @Step("Делаем свайп пока не появится элемент (только для айос и андройд)")
     public void swipeUPTitleElementAppear(String locator, String error_message, int max_swipes)
     {
         if (driver instanceof AppiumDriver){
@@ -435,6 +456,7 @@ public class MainPageObject {
 
     //метод, который выясняет есть ли элемент на странице
     // для IOS так как в айос элемент всегда на странице, даже если его не видно. А нам надо найти элемент в конкретном месте
+    @Step("Находим элемент на странице, даже когда его еще не видно (для Айос)")
     public boolean isElementLocatedOnTheScreen(String locator){
         //выяснять есть ли элемент будем по его положению по вертикальной оси у по отношению ко всей длине страницы
         //находим елемент по локатору и получаем его расположение по оси Y
@@ -461,6 +483,7 @@ public class MainPageObject {
 
 
     //метод перемещения элемента по координатам Только для андройд и айос. Для браузера не подходит
+    @Step("Делаем перемещение кнопки Save в Тулбаре меню")
     public void moveButton(int timeOfSwipe, int startX, int startY, int endX,int endY)
     {
         if (driver instanceof AppiumDriver){
@@ -502,6 +525,7 @@ public class MainPageObject {
 
 
     //Метод свайпа влево в Андройд Только для андройд и айос. Для браузера не подходит
+    @Step("Делаем свайп влево для Андройд")
     public void leftSwipe(int timeOfSwipe, int startX, int startY, int endX,int endY)
     {
         if (driver instanceof AppiumDriver){
@@ -540,6 +564,7 @@ public class MainPageObject {
 
     }
     //Метод свайпа влево в Айос Только для айос. Для браузера не подходит
+    @Step("Делаем свайп влево для айос")
     public void leftSwipeWithOffsetX(int timeOfSwipe, int elementX, int offsetX,  int startY,int endY)
     {
         if (driver instanceof AppiumDriver){
@@ -580,6 +605,7 @@ public class MainPageObject {
     }
 
     //метод скролла для моб версии в браузере только для mobile_web
+    @Step("Делаем скролл для версии мобайл веб")
     public void scrollWebPageUp(){
         if (Platform.getInstance().isMW()){
             JavascriptExecutor JSExecutor = (JavascriptExecutor) driver;
@@ -590,6 +616,8 @@ public class MainPageObject {
         }
     }
     //метод скролл пока элемент не станет видимым.только для mobile_web
+
+    @Step("Делаем скролл пока элемент не станет видимым")
     public void scrollWebPageTitleElementNotVisible(String locator, String error_message, int max_swiped){
         //счетчик выполенных скроллов
         int already_swiped =0;
@@ -611,6 +639,40 @@ public class MainPageObject {
             }
         }
     }
+
+    //метод создания скриншотов.  Скриншоты появятся в дереве проекта
+    @DisplayName("Скриншот")
+    @Step("Делаем скриншот")
+    public String takeScreenshot(String name){
+        TakesScreenshot ts = (TakesScreenshot)this.driver;
+        File source = ts.getScreenshotAs(OutputType.FILE);
+        String path = System.getProperty("user.dir") + "/" +name + "_screenshot.png";
+        try {
+            FileUtils.copyFile(source, new File(path));
+            System.out.println("The screenshot was taken: " + path);
+
+        }catch (Exception e){
+            System.out.println("Cannot take screenshot. Error: " + e.getMessage());
+        }
+        return path;
+    }
+
+    //метод создания скриншотов для отчетов Аллюр
+    //каждый раз когда будем вызывать этот метод к соот-му степу будет создаваться скриншот
+    @Attachment
+    @Step("Делаем скриншот для аллюр")
+    public static byte[] screenshot (String path){
+        byte[] bytes = new byte[0];
+        try {
+            bytes = Files.readAllBytes(Paths.get(path));
+
+        } catch (IOException e) {
+            System.out.println("Cannot get bytes from screenshot. Error: " +e.getMessage());
+        }
+        return bytes;
+    }
+
+
 
 
 }

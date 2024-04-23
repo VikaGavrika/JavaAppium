@@ -1,6 +1,7 @@
 package lib.UI;
 
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 import lib.Platform;
 import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -47,6 +48,7 @@ abstract public class MyListPageObject extends MainPageObject {
 
 
     //метод ожидания описания
+    @Step("Ожидание описания статьи")
     public WebElement waitForDescriptionElement(String article_description) {
         String description_Element_xpath = getResultDescriptionElement(article_description);
         return this.waitForElementPresent(description_Element_xpath, "Cannot find article description " + article_description, 25);
@@ -54,6 +56,7 @@ abstract public class MyListPageObject extends MainPageObject {
     }
 
     //метод в котором будем получать название статьи
+    @Step("Получение описания статьи")
     public String getArticleDescription(String article_description) {
         WebElement description_element = waitForDescriptionElement(article_description);
         //метод будет возвращать название статьи
@@ -71,6 +74,7 @@ abstract public class MyListPageObject extends MainPageObject {
     }
 
     //для Айос. метод закрывающий мод окно, возникшее на экране списков сохр статей
+    @Step("Закрытие модального окна в списке статей (только для Айос)")
     public void close_modal_window() {
         this.waitForElementAndClick(
                 CLOSE_MODAL_WINDOW_BUTTON,
@@ -80,6 +84,7 @@ abstract public class MyListPageObject extends MainPageObject {
     }
 
     //поиск папки с именем и открываем ее
+    @Step("Поиск папки с именем'{article_title}' и ее открытие")
     public void openFolderByName(String name_of_folder) {
         String folder_name_xpath = getFolderXpathByName(name_of_folder);
         //поиск списка статей по названию, название задано в переменную выше. клик на список статей
@@ -91,6 +96,7 @@ abstract public class MyListPageObject extends MainPageObject {
     }
 
     //Метод ожидания статьи
+    @Step("Ожидание присутствия статьи с названием '{article_title}'")
     public void waitForArticleToAppearByTitle(String article_title) {
         String article_xpath = getSavedArticleXpathByName(article_title);
         //поиск списка статей по названию
@@ -99,8 +105,12 @@ abstract public class MyListPageObject extends MainPageObject {
                 "Cannot find saved article by title" + article_title,
                 20
         );
+        //делаем скриншот
+        screenshot(this.takeScreenshot("SavedList_with_article"));
+
     }
 
+    @Step("Ожидание присутствия статьи с названием и клик по ней")
     public void waitForArticleToAppearByTitleAndClick(String article_title) {
         String article_xpath = getSavedArticleXpathByName(article_title);
         //поиск списка статей по названию
@@ -117,22 +127,28 @@ abstract public class MyListPageObject extends MainPageObject {
         );
     }
 
+    @Step("Удаление статьи свайпом из списка")
     public void swipeByArticleToDelete(String article_title) {
         //находится статья на экране
         this.waitForArticleToAppearByTitle(article_title);
         //удаление статьи свайпом влево
         this.leftSwipe(200, 826, 977, 92, 941);
+        //делаем скриншот
+        screenshot(this.takeScreenshot("SavedList_after_delete"));
     }
-
+    @Step("Удаление статьи свайпом из списка (для Андройд)")
     public void swipeByArticleToDeleteFromList(String article_title) {
         //находится статья на экране
         this.waitForArticleToAppearByTitle(article_title);
         //удаление статьи свайпом влево
         this.leftSwipe(200, 826, 977, 92, 941);
+        //делаем скриншот
+        screenshot(this.takeScreenshot("SavedList_after_delete"));
 
     }
 
     //для Айос
+    @Step("Удаление статьи из списка свайпом  и нажатием на корзинку (для Айос)")
     public void swipeByArticleToDeleteFromIOSList(String article_title) {
         //находится статья на экране
         this.waitForArticleToAppearByTitle(article_title);
@@ -145,10 +161,13 @@ abstract public class MyListPageObject extends MainPageObject {
         this.leftSwipeWithOffsetX(200, elementX, offsetX, 277, 277);
         //клик по корзинке удаления
         this.waitForElementAndClick(DELETE_BUTTON, "Cannot find delete action button", 15);
+        //делаем скриншот
+        screenshot(this.takeScreenshot("SavedList_after_delete"));
         System.out.println("Статья удалена...");
 
-
     }
+
+    @Step("Удаление статьи из списка сохраненных статей")
     public void deleteArticleFromMWList(String article_title)throws InterruptedException{
         System.out.println("начинаю удаление статьи.");
         String remove_locator = getRemoveButtonByTitle(article_title);
@@ -162,8 +181,11 @@ abstract public class MyListPageObject extends MainPageObject {
         System.out.println("начинаю обновление страницы.");
         //обновление страницы, чтобы удаленная статья исчезла
         driver.navigate().refresh();
+        //делаем скриншот
+        screenshot(this.takeScreenshot("SavedList_after_delete"));
     }
 
+    @Step("Ожидание отсутствия статьи с названием '{article_title}'")
     public void waitForArticleToDisappearByTitle(String article_title) {
         String article_xpath = getSavedArticleXpathByName(article_title);
         //поиск списка статей по названию
@@ -175,6 +197,7 @@ abstract public class MyListPageObject extends MainPageObject {
     }
 
     //счетчик результатов поиска
+    @Step("Находим количество результатов поиска")
     public int getSavedArticleCount(int timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(ARTICLE_CONTAINER)));
@@ -186,6 +209,7 @@ abstract public class MyListPageObject extends MainPageObject {
 
 
     //метод для вывода списка description найденных статей
+    @Step("Вывод списка description найденных статей")
     public List<String> getSavedArticleDescriptions() {
         List<String> articleDescriptions = new ArrayList<>();
         try {

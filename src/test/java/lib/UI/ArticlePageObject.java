@@ -1,6 +1,7 @@
 package lib.UI;
 
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import lib.Platform;
@@ -34,10 +35,12 @@ abstract public class ArticlePageObject extends MainPageObject{
 
     /*TEMPLATES METHODS */
     //метод, который подставляет подстроку по шаблону в заголовок статья
+    @Step("Подставляет подстроку '{substring}' в заголовок первой статьи")
     private static String getResultTitleElement(String substring){
         //меняем значение переменной SUBSTRING на строчку substring
         return TITLE_TPL.replace("{SUBSTRING}", substring);
     }
+    @Step("Подставляет подстроку '{substring}' в заголовок второй статьи")
     private static String getResultTitleSecondElement(String substring){
         //меняем значение переменной SUBSTRING на строчку substring
         return TITLE_TPL2.replace("{SUBSTRING}", substring);
@@ -48,20 +51,24 @@ abstract public class ArticlePageObject extends MainPageObject{
     /*TEMPLATES METHODS */
 
     //метод ожидания статьи
+    @Step("Ожидаем название '{substring}' на странице статьи")
     public WebElement waitForTitleElement(String substring){
         String title_Element_xpath = getResultTitleElement(substring);
         return this.waitForElementPresent(title_Element_xpath,"Cannot find article title",25);
 
     }
-
+    @Step("Ожидаем название второй статьи '{substring}' на странице статьи")
     public WebElement waitForTitleSecondElement(String substring){
         String title_Element_xpath = getResultTitleSecondElement(substring);
         return this.waitForElementPresent(title_Element_xpath,"Cannot find article title",25);
 
     }
     //метод получение название первой статьи
+    @Step("Получаем название '{substring}' на странице статьи")
     public String getArticleTitle(String substring) {
         WebElement title_element = waitForTitleElement(substring);
+        //делаем скриншот
+        screenshot(this.takeScreenshot("article_first_title"));
         //метод будет возвращать название статьи
         if (Platform.getInstance().isAndroid()){
             return title_element.getAttribute("text");
@@ -75,8 +82,11 @@ abstract public class ArticlePageObject extends MainPageObject{
 
 
     //метод в котором будем получать название второй статьи
+    @Step("Получаем название второй статьи '{substring}' на странице статьи")
     public String getArticleSecondTitle(String substring){
         WebElement title_element = waitForTitleSecondElement(substring);
+        //делаем скриншот
+        screenshot(this.takeScreenshot("article_second_title"));
         //метод будет возвращать название статьи
         if (Platform.getInstance().isAndroid()){
             return title_element.getAttribute("text");
@@ -89,6 +99,7 @@ abstract public class ArticlePageObject extends MainPageObject{
 
 
     //сделаем метод свайпа до футера
+    @Step("Делаем свайп до футера на странице статьи")
     public void swipeToFooter(){
         if(Platform.getInstance().isAndroid()) {
             this.verticalSwipeToFindElement(
@@ -111,6 +122,7 @@ abstract public class ArticlePageObject extends MainPageObject{
 
     }
     //метод с шагами, которые добавляют статью в список статей
+    @Step("Добавляем статью в список статей")
     public void addArticleToMyList(String name_of_folder) {
         //делаем переменные для каждого из элемента, так их будет проще менять
 
@@ -179,6 +191,7 @@ abstract public class ArticlePageObject extends MainPageObject{
     }
 
     //метод с шагами, который добавляет еще одну статью в список
+    @Step("Добавляем вторую статью в список статей")
     public void addSecondArticleToMyList(String name_of_folder){
         //нажать на кнопку с выпадающим списком
         this.waitForElementAndClick(
@@ -213,6 +226,7 @@ abstract public class ArticlePageObject extends MainPageObject{
 
     }
     //метод закрытия для разных платформ
+    @Step("Закрываем статью")
     public void closeArticle(){
         if(Platform.getInstance().isAndroid()) {
             this.waitForElementAndClick(
@@ -229,6 +243,7 @@ abstract public class ArticlePageObject extends MainPageObject{
         }
     }
     //метод возврата на главную для Айос
+    @Step("Возвращаемся на Главную")
     public void comeBackToMain(){
         this.waitForElementAndClick(
                 CANCEL_BUTTON,
@@ -239,12 +254,14 @@ abstract public class ArticlePageObject extends MainPageObject{
 
 
     // Проверяем, что у статьи есть элемент title
+    @Step("Проверяем, что у статьи есть название '{substring}'")
     public void assertElementPresentWithSearchTitle(String substring){
         String title_Element_xpath = getResultTitleElement(substring);
         this.assertElementPresent(title_Element_xpath);
     }
 
     //метод добавления статьи в список для IOS
+    @Step("Добавляем статью в список для IOS")
     public void addArticlesToMySaved(){
         //только для вэба сначала удаляем статью из сохраненок,если она там есть.
         if (Platform.getInstance().isMW()){
@@ -256,6 +273,7 @@ abstract public class ArticlePageObject extends MainPageObject{
     }
     //метод, который будет удалять статью,если она уже была в избранном
     //если кнопка удаления статьи из избранного присутствует мы кликаем по кнопке удаления
+    @Step("Удаляем статью, потому что она уже была в Избранном")
     public void removeArticleFromSavedIfItAdded() {
         if (this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON)) {
             this.waitForElementAndClick(

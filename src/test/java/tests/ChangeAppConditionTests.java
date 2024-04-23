@@ -1,19 +1,29 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.Platform;
 import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
 import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
+@Epic("Tests for change App")
 public class ChangeAppConditionTests extends CoreTestCase {
     //Тесты на ориентации и бэкграунт
 
     //Тест11, который вводит значение в поиск, выбирает статью, после поворачивать экран телефона,
     // проверять, что название статьи не изменилось. Только айос и Андройд
     @Test
+    @Features(value = {@Feature(value="Search"),@Feature(value="Article")})
+    @DisplayName("Поворот экрана и сравнение названия статьи с ожидаемым названием")
+    @Description("Поиск статьи, ее открытие и получение названия. Затем поворот экрана. Далее сравнение заголовка до и после поворота")
+    @Step("Старт testChangeScreenOrientationOnSearchResults")
+    //критичность теста
+    @Severity(value = SeverityLevel.MINOR)
     public void testChangeScreenOrientationOnSearchResults()
     {
         //Если запуск в браузере, то просто возвращаем, этот тест будет пропускаться.
@@ -45,7 +55,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         String title_after_rotation = ArticlePageObject.getArticleTitle("Object-oriented programming language");
 
         //Сравниваем два значения
-        assertEquals(
+        Assert.assertEquals(
                 "Article title have been changed after rotation",
                 title_before_rotation,
                 title_after_rotation
@@ -58,7 +68,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
 
 
         // сравниваем два значения
-        assertEquals(
+        Assert.assertEquals(
                 "Article title have been changed after rotation",
                 title_before_rotation,
                 title_after_second_rotation
@@ -74,6 +84,12 @@ public class ChangeAppConditionTests extends CoreTestCase {
     // потом приложение сворачиваем, через некоторое время разворачиваем, после открытия приложения проверяем,
     // что элемент, остался на месте.
     @Test
+    @Features(value = {@Feature(value="Search"),@Feature(value="Article")})
+    @DisplayName("Сворачивание и разворачивание приложения и сравнение названия статьи с ожидаемым названием")
+    @Description("Поиск статьи, ее открытие и получение названия. Затем сворачивание и разворачивание экрана. Далее сравнение заголовка до и после сворачивания")
+    @Step("Старт testCheckSearchArticleInBackground")
+    //критичность теста
+    @Severity(value = SeverityLevel.MINOR)
     public void testCheckSearchArticleInBackground()
     {
         //Если запуск в браузере, то просто возвращаем, этот тест будет пропускаться.

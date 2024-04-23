@@ -1,21 +1,24 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.Platform;
 import lib.UI.*;
 import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.MyListPageObjectFactory;
 import lib.UI.factories.NavigationUIFactory;
-import lib.UI.factories.NavigationUIFactory;
+
 import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.WebElement;
 
-import java.util.List;
 
+
+@Epic("Tests for save articles")
 public class MyListTests extends CoreTestCase {
     //Тесты связанные с MyLists списком сохраненных статей
+
     //Тест8. Поиск определенной статьи, выбрать статью, нажать на кнопку с выпадающем списком, после открытия выбрать
     // и нажать на кнопку из списка, в батоншите создать новый список (нажав на кнопку), ввести название списка в поле,
     // нажать ОК, выйти из статьи, нажать на кнопку списки, перейти на экран со спискими, выбрать один их них, нажать,
@@ -29,6 +32,12 @@ public class MyListTests extends CoreTestCase {
 
 
     @Test
+    @Features(value = {@Feature(value="Search"),@Feature(value="Article"),@Feature(value="Auth"),@Feature(value="SavedArticle")})
+    @DisplayName("Сохранение статьи в избранное")
+    @Description("Поиск статьи, сохранить ее в избранное способом характерным для определенной платформы, затем зайти в список сохраненных статей и удалить статью")
+    @Step("Старт сохранения первой статьи")
+    //критичность теста
+    @Severity(value = SeverityLevel.CRITICAL)
     public void testSavedFirstArticleToMyList() throws InterruptedException {
         //пропустить онбординг
         this.skipOnboarding();
@@ -80,7 +89,7 @@ public class MyListTests extends CoreTestCase {
             //ждем пока средиректит обратно на страницу статьи
             ArticlePageObject.waitForTitleElement("programming language");
             //проверяем, что мы все еще на той же странице
-            assertEquals("we are not  on the same page after login",
+            Assert.assertEquals("we are not  on the same page after login",
                     article_title,
                     ArticlePageObject.getArticleTitle("programming language")
             );
@@ -136,6 +145,12 @@ public class MyListTests extends CoreTestCase {
     //Ex5. Tecт13, сохранить две статьи в список, одну статью удалить, убелиться, что вторая статья осталась,
     // зайти в нее и сравнить заголовки
     @Test
+    @Features(value = {@Feature(value="Search"),@Feature(value="Article"),@Feature(value="SavedArticle")})
+    @DisplayName("Сохранение еще одной статьи в избранное")
+    @Description("Поиск статьи, сохранить ее в избранное способом характерным для определенной платформы, затем зайти в список сохраненных статей и удалить статью")
+    @Step("Старт сохранения еще одной статьи")
+    //критичность теста
+    @Severity(value = SeverityLevel.CRITICAL)
     public void testSavedTwoArticleToMyList() throws InterruptedException {
         //пропустить онбординг
         this.skipOnboarding();
@@ -188,7 +203,7 @@ public class MyListTests extends CoreTestCase {
             //ждем пока средиректит обратно на страницу статьи
             ArticlePageObject.waitForTitleElement("programming language");
             //проверяем, что мы все еще на той же странице
-            assertEquals("we are not  on the same page after login",
+            Assert.assertEquals("we are not  on the same page after login",
                     title_first_article,
                     ArticlePageObject.getArticleTitle("programming language")
             );
@@ -291,7 +306,7 @@ public class MyListTests extends CoreTestCase {
         String title_first_article_after_list_change = ArticlePageObject.getArticleTitle("Java (programming language)");
 
         //Сравниваем два значения и yбеждаемся, что заголовок в первой статье совпадает
-        assertEquals(
+        Assert.assertEquals(
                 "Article title have been changed after rotation",
                 title_first_article,
                 title_first_article_after_list_change

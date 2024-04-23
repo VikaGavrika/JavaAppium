@@ -1,16 +1,26 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
 import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
+@Epic("Tests for articles")
 public class ArticleTests extends CoreTestCase {
     //Все тесты на статьи
     //Тест3 Сравнить название статьи
     @Test
+    @Features(value = {@Feature(value="Search"),@Feature(value="Article")})
+    @DisplayName("Сравнение названия статьи с ожидаемым названием")
+    @Description("Открываем статью Java (programming language) и убеждаемся,что заголовок соответствует ожидаемому (Java (programming language))")
+    @Step("Старт testCompareArticleTitle")
+    //критичность теста
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testCompareArticleTitle() {
         //пропустить онбординг
         this.skipOnboarding();
@@ -31,8 +41,11 @@ public class ArticleTests extends CoreTestCase {
         //получаем название статьи, текст этой статьи и записываем ее в переменную
         String article_title = ArticlePageObject.getArticleTitle("Java (programming language)");
 
+        //делаем скриншот и даем имя скриншоту
+        //ArticlePageObject.takeScreenshot("article_page");
+
         //используем это название статьи для сравнения
-        assertEquals(
+        Assert.assertEquals(
                 "We see unexpected title",
                 "Java (programming language)",
                 article_title
@@ -42,6 +55,11 @@ public class ArticleTests extends CoreTestCase {
 
     //Тест4, свайп до конца страницы до текста в футере
     @Test
+    @Features(value = {@Feature(value="Search"),@Feature(value="Article")})
+    @DisplayName("Свайп до конца статьи")
+    @Description("Открываем статью и пролистываем ее до конца, до определенного текста в футере")
+    @Step("Старт testSwipeArticle")
+    @Severity(value = SeverityLevel.MINOR)
     public void testSwipeArticle() {
         //пропустить онбординг
         this.skipOnboarding();
@@ -53,7 +71,7 @@ public class ArticleTests extends CoreTestCase {
         //поиск элемента и отправки значения в поле
         SearchPageObject.typeSearchLine("Java");
         //Поиск элемента и клик по нему
-        SearchPageObject.clickByArticleWithSubstring("Java (programming language)");
+        SearchPageObject.clickByArticleWithSubstring("programming language");
         //используем новый метод. инициализация
         ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);;
         //поиск заголовка нужной статьи, ждем появления названия
@@ -61,10 +79,18 @@ public class ArticleTests extends CoreTestCase {
         //swipe
         ArticlePageObject.swipeToFooter();
 
+        //делаем скриншот и даем имя скриншоту
+        //ArticlePageObject.takeScreenshot("article_footer");
+
     }
     //Ex6. Тест14, который открывает статью и убеждается, что у нее есть элемент title.  тест не должен
     // дожидаться появления title, проверка должна производиться сразу. Если title не найден - тест падает с ошибкой.
     @Test
+    @Feature(value="Article")
+    @DisplayName("Проверка, что у статьи есть название, не дожидаясь появления этого названия")
+    @Description("Ищем определенную статью в поиске, находим ее заголовок и убеждаемся, что заголовок соответствует ожидаемому еще до открытия самой статьи")
+    @Step("Старт testAssertTitle")
+    @Severity(value = SeverityLevel.TRIVIAL)
     public void testAssertTitle() {
         //пропустить онбординг
         this.skipOnboarding();
