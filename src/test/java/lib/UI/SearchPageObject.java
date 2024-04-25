@@ -25,10 +25,10 @@ abstract public class SearchPageObject extends  MainPageObject {
     protected static String SEARCH_RESULT_BY_SUBSTRING_TPL;
     protected static String SEARCH_RESULTS_TITLE_TPL;
     protected static String SEARCH_RESULTS_DESCRIPTION_TPL;
+    protected static String SEARCH_RESULT_TITLE_AND_DESCRIPTION_TPL;
     protected static String SEARCH_CANCEL_BUTTON ;
     protected static String SEARCH_CLOSE_BUTTON;
     protected static String SEARCH_RESULT_ELEMENT;
-    protected static String SEARCH_RESULT_ELEMENTS;
     protected static String SEARCH_EMPTY_RESULT_ELEMENT;
     protected static String RESULT_LIST;
     protected static String EMPTY_RESULT_LIST;
@@ -50,11 +50,18 @@ abstract public class SearchPageObject extends  MainPageObject {
     }
     @Step("Подставляем в название статьи определенное значение, подставляем в описание статьи определенное значение")
     private static String getResultTitleAndDescriptionElements(String title, String description){
+
         //меняем значение переменной SUBSTRING на строчку substring
         String title_Elements_xpath = SEARCH_RESULTS_TITLE_TPL.replace("{SUBSTRING_TITLE}", title);
         String description_Elements_xpath = SEARCH_RESULTS_DESCRIPTION_TPL.replace("{SUBSTRING_DESCRIPTION}", description);
         return String.format("(%s)[%s]", title_Elements_xpath, description_Elements_xpath);
 
+    }
+
+    private static String getArticleWithTitleAndDescription(String title, String description) {
+        return SEARCH_RESULT_TITLE_AND_DESCRIPTION_TPL
+                .replace("{SUBSTRING_TITLE}", title)
+                .replace("{SUBSTRING_DESCRIPTION}", description);
     }
 
 
@@ -75,6 +82,7 @@ abstract public class SearchPageObject extends  MainPageObject {
 
     @Step("Ожидаем элемент веб-страницы, соответствующий заданному заголовку и описанию")
     public WebElement waitForElementByTitleAndDescription(String title, String description) {
+
         String title_description_Elements_xpath = getResultTitleAndDescriptionElements(title,description);
         //return this.waitForElementPresent(String.valueOf(By.xpath(title_description_Elements_xpath)), "Cannot find article title and description", 30);
         By by = By.xpath(title_description_Elements_xpath);
@@ -201,7 +209,7 @@ abstract public class SearchPageObject extends  MainPageObject {
     @Step("Определяем количество всех найденных статей в листе результатов поиска")
     public int getSearchResultsCount(int timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
-        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(SEARCH_RESULT_ELEMENTS)));
+        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(SEARCH_RESULT_ELEMENT)));
         return elements.size();
     }
 

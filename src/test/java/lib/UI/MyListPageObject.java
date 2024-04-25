@@ -200,7 +200,7 @@ abstract public class MyListPageObject extends MainPageObject {
     @Step("Находим количество результатов поиска")
     public int getSavedArticleCount(int timeoutInSeconds) {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
-        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(ARTICLE_CONTAINER)));
+        List<WebElement> elements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(ARTICLE_CONTAINER)));
         System.out.println("Найдено " + elements.size() + " сохраненных статей.");
         return elements.size();
 

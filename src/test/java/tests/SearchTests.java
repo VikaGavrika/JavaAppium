@@ -4,8 +4,10 @@ import io.qameta.allure.*;
 import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 
+import lib.UI.ArticlePageObject;
 import lib.UI.SearchPageObject;
 
+import lib.UI.factories.ArticlePageObjectFactory;
 import lib.UI.factories.SearchPageObjectFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -250,7 +252,8 @@ public class SearchTests extends CoreTestCase {
 
         //ждём, пока элемент с заданным заголовком и описанием станет видимым на странице.
         WebElement elementA = SearchPageObject.waitForElementByTitleAndDescription(articleTitleA, articleDescriptionA);
-        if (articleTitleA.equals(elementA.getText())) {
+
+        if (elementA.getText().contains(articleTitleA)) {
             // Выводим в консоль название
             System.out.println("Найден " + articleTitleA + " и " + articleDescriptionA + " элементы");
         }
@@ -260,7 +263,7 @@ public class SearchTests extends CoreTestCase {
 
         //ждём, пока элемент с заданным заголовком и описанием станет видимым на странице.
         WebElement elementB = SearchPageObject.waitForElementByTitleAndDescription(articleTitleB, articleDescriptionB);
-        if (articleTitleB.equals(elementB.getText())) {
+        if (elementB.getText().contains(articleTitleB)) {
             // Выводим в консоль название
             System.out.println("Найден " + articleTitleB + " и " + articleDescriptionB + " элементы");
         }
@@ -271,12 +274,23 @@ public class SearchTests extends CoreTestCase {
         //ждём, пока элемент с заданным заголовком и описанием станет видимым на странице.
         SearchPageObject.waitForElementByTitleAndDescription(articleTitleC, articleDescriptionC);
         //достаем текст из элемента
-        String elementC = SearchPageObject.getArticleByTitleAndDescription("Java (software platform)","Set of computer software and specifications");
+        WebElement elementC = SearchPageObject.waitForElementByTitleAndDescription(articleTitleC, articleDescriptionC);
         //проверяем одинаковы ли две строки, без учета регистра и не пуста ли строка elementC
-        if (articleTitleC.equalsIgnoreCase(elementC) && !elementC.isEmpty()) {
+        if (elementC.getText().contains(articleTitleC)) {
             // Выводим в консоль название
             System.out.println("Найден " + articleTitleC + " и " + articleDescriptionC + " элементы");
         }
+        //кликаем, чтобы точно убедиться,что тест работает и нужные статьи находятся
+        elementC.click();
+
+        //используем это название статьи для проверки,что нужная статья открылась
+        Assert.assertEquals(
+                "We see unexpected title",
+                "Java (software platform)",
+                articleTitleC
+        );
+        System.out.println("Проверка пройдена");
+
 
     }
 

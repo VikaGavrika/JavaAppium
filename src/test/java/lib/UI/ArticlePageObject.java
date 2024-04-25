@@ -67,8 +67,6 @@ abstract public class ArticlePageObject extends MainPageObject{
     @Step("Получаем название '{substring}' на странице статьи")
     public String getArticleTitle(String substring) {
         WebElement title_element = waitForTitleElement(substring);
-        //делаем скриншот
-        screenshot(this.takeScreenshot("article_first_title"));
         //метод будет возвращать название статьи
         if (Platform.getInstance().isAndroid()){
             return title_element.getAttribute("text");
@@ -85,8 +83,6 @@ abstract public class ArticlePageObject extends MainPageObject{
     @Step("Получаем название второй статьи '{substring}' на странице статьи")
     public String getArticleSecondTitle(String substring){
         WebElement title_element = waitForTitleSecondElement(substring);
-        //делаем скриншот
-        screenshot(this.takeScreenshot("article_second_title"));
         //метод будет возвращать название статьи
         if (Platform.getInstance().isAndroid()){
             return title_element.getAttribute("text");

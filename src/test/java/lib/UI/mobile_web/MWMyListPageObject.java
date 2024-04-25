@@ -9,7 +9,7 @@ public class MWMyListPageObject extends MyListPageObject {
         ARTICLE_BY_TITLE_TPL = "xpath://h3[contains(text(),'{TITLE}')]";
         REMOVE_FROM_SAVED_BUTTON = "xpath://h3[contains(text(),'{TITLE}')]/../../a[contains(@class,'watched')]";
         DELETE_BUTTON = "id:swipe action delete";
-        ARTICLE_CONTAINER = "xpath://div[@id='mw-content-text']/ul/li]";
+        ARTICLE_CONTAINER = "#content h3";
         ARTICLE_BY_DESCRIPTION_TPL = "xpath://XCUIElementTypeStaticText[@name='{DESCRIPTION}']";
         DESCRIPTION = "xpath://XCUIElementTypeStaticText";
 
